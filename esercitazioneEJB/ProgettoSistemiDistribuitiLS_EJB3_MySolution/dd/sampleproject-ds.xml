@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+	<local-tx-datasource>
+		<jndi-name>SampleProjectDS</jndi-name>
+			<connection-url>jdbc:mysql:///sampleProject</connection-url>
+	     	<driver-class>com.mysql.jdbc.Driver</driver-class>
+	      	<user-name>sampleProject</user-name>
+	      	<password>sampleProject</password>
+	</local-tx-datasource>
+</datasources>
+
