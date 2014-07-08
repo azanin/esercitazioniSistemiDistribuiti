@@ -6,45 +6,110 @@ import it.unibo.sdls.sampleproject.dao.AuthorDAO;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
+
+@Transactional
 public class JPAAuthorDAO implements AuthorDAO {
 
 	private Logger logger;
 
+	@PersistenceContext
 	private EntityManager entityManager;
 
 	public int insertAuthor(Author author) {
-		return 0;
+		try
+		{
+			entityManager.persist(author);
+			return author.getId();
+		}
+		catch(Exception e)
+		{
+			logger.info(e.getMessage());
+			return -1;
+
+		}
+
 	}
 
 	public int removeAuthorByName(String name) {
-		return 0;
+		try
+		{
+			Author author = (Author) entityManager.createQuery("SELECT Author a FROM Author WHERE a.name= :name").setParameter("name", name).getSingleResult();
+			entityManager.remove(author);		
+			return author.getId();
+		}
+		catch(Exception e )
+		{
+			logger.info(e.getMessage());
+			return -1;
+
+		}
 	}
 
 	public int removeAuthorById(int id) {
-		// TODO Auto-generated method stub
-		return 0;
+		try
+		{
+		Author author = entityManager.find(Author.class, id);
+		entityManager.remove(author);
+		return author.getId();
+		}
+		catch(Exception e)
+		{
+			logger.info(e.getMessage());
+			return -1;
+		}
 	}
 
 	public Author findAuthorByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		try
+		{
+			Author author = (Author) entityManager.createQuery("SELECT Author a FROM Author WHERE a.name= :name").setParameter("name", name).getSingleResult();
+			return author;
+		}
+		catch(Exception e)
+		{
+			logger.info(e.getMessage());
+			return null;
+		}
 	}
 
 	public Author findAuthorById(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		try
+		{
+		Author author = entityManager.find(Author.class, id);
+		return author;
+		}
+		catch(Exception e)
+		{
+			logger.info(e.getMessage());
+			return null;
+		}
 	}
 
 	public List<Author> findAllAuthors() {
-		// TODO Auto-generated method stub
-		return null;
+		try
+		{
+		List<Author> authors = entityManager.createQuery("FROM Author").getResultList();
+		return authors;
+		}
+		catch(Exception e)
+		{
+			logger.info(e.getMessage());
+			return null;
+		}
 	}
 
 	
+	public void setLogger(Logger logger) {
+		this.logger = logger;
+	}
 
-	
+
+
 
 }
