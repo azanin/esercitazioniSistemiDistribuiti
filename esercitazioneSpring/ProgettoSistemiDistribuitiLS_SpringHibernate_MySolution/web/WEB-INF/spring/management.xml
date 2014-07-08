@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation=	"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						 http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+			
+	<!-- 
+		Spring will attempt to locate the running MBeanServer and register
+		your beans with that server (if any). This behavior is useful when 
+		your application is running inside a container such as Tomcat or 
+		IBM WebSphere that has it's own MBeanServer.
+		By default, MBeanServerFactoryBean will always create a new MBeanServer even if one is already running. 
+		To have the MBeanServerFactoryBean attempt to locate a running MBeanServer first,
+		 set the value of the "locateExistingServerIfPossible" property to "true".	
+	 -->
+	<bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
+		<!-- indicate to first look for a server -->
+		<property name="locateExistingServerIfPossible" value="true" />
+	</bean>
+	
+	<!-- exposed bean to be registered on mbeanServer
+		provide access to management methods -->
+	<bean id="daoMysqlManager" class="it.unibo.sdls.sampleproject.management.dao.mysql.DaoMySqlManager" init-method="init"></bean>
+	<bean id="daoMyHsqlManager" class="it.unibo.sdls.sampleproject.management.dao.mysql.DaoMyHsqlManager" init-method="init"></bean>		
+			
+			
+	<bean id="mbeanExporter" class="org.springframework.jmx.export.MBeanExporter">
+		<property name="server" ref="mbeanServer"></property>
+		<property name="beanDaoMysqlManager" ref="daoMysqlManager"></property>
+		<property name="beanDaoHsqlManager" ref="daoMyHsqlManager"></property>
+		<property name="registrationBehaviorName" value="REGISTRATION_IGNORE_EXISTING "></property>
+	</bean>
+	
+	<!-- JSR-160 Server-side Connectors -->
+	
+	
+	<!--  
+		When using a RMI-based connector you need the lookup service (tnameserv or rmiregistry) 
+		to be started in order for the name registration to complete.
+	-->
+	<bean id="registry" class="org.springframework.remoting.rmi.RmiRegistryFactoryBean">
+		<property name="port" value="1099" />
+	</bean>
+	
+	<!-- makes MBeans available as remote objects -->
+	<bean id="serverConnector" class="org.springframework.jmx.support.ConnectorServerFactoryBean" depends-on="registry">
+		<property name="serviceUrl" value="service:jmx:rmi://localhost/jndi/rmi://localhost:1099/jmx-rmi-connector" />
+		<property name="objectName" value="connector:name=rmi" /> 
+	</bean>
+	
+	<!-- may be used by clients to access the remote MBean server (or use JMX.newMBeanProxy for proxy-based access) -->
+	<bean id="mbeanServerConnection" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean">
+		<property name="serviceUrl" value="service:jmx:rmi://localhost/jndi/rmi://localhost:1099/jmx-rmi-connector" />
+	</bean>	 
+</beans>
