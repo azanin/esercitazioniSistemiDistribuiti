@@ -11,14 +11,18 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class JPABookDAO implements BookDAO {
 
 	private Logger logger;
 
+	@PersistenceContext
 	private EntityManager entityManager;
 
 

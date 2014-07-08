@@ -43,70 +43,62 @@ public class JPAPublisherDAO implements PublisherDAO {
 	
 
 	public Publisher findPublisherById(int id) {
-		Publisher publisher;
-		Query query = entityManager.createQuery("SELECT p FROM Publisher p WHERE p.id = :id");
-		query.setParameter("id", id);
 		try {
-			publisher = (Publisher) query.getSingleResult();
-		} catch (NoResultException e) {
-			logger.error(e.getMessage());
-			publisher = null;
-		} catch (NonUniqueResultException e) {
-			logger.error(e.getMessage());
-			publisher = null;
+			return entityManager.find(Publisher.class, id);
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			return null;
 		}
-		return publisher;
 	}
 
 	public Publisher findPublisherByName(String name) {
-		Publisher publisher;
 		Query query = entityManager.createQuery("SELECT p FROM Publisher p WHERE p.name = :name");
 		query.setParameter("name", name);
 		try {
-			publisher = (Publisher) query.getSingleResult();
-		} catch (NoResultException e) {
+			return (Publisher) query.getSingleResult();
+		} catch (Exception e) {
 			logger.info(e.getMessage());
-			publisher = null;
-		} catch (NonUniqueResultException e) {
-			logger.info(e.getMessage());
-			publisher = null;
+			return null;
 		}
-		return publisher;
+		
 	}
 
 	public int insertPublisher(Publisher publisher) {
-		int operationResult;
 		try {
 			entityManager.persist(publisher);
-			operationResult = 1;
-		} catch (EntityExistsException e) {
-			logger.error(e.getMessage());
-			operationResult = -1;
-		} catch (IllegalStateException e) {
-			logger.error(e.getMessage());
-			operationResult = -1;
-		} catch (IllegalArgumentException e) {
-			logger.error(e.getMessage());
-			operationResult = -1;
-		} catch (PersistenceException e) {
-			logger.error(e.getMessage());
-			operationResult = -1;
+			return publisher.getId();
 		}
-		return operationResult;
+		catch(Exception e)
+		{
+			logger.info(e.getMessage());
+			return -1;
+		}
 	}
 
 
 
 	public int removePublisherByName(String name) {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+			Publisher publisher = (Publisher) entityManager.createQuery("SELECT p FROM Publisher p WHERE p.name= :name").setParameter("name", name).getSingleResult();
+			entityManager.remove(publisher);
+			return publisher.getId();
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			return -1;
+		}
 	}
 
 
 
 	public int removePublisherById(int id) {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+			Publisher publisher = entityManager.find(Publisher.class, id);
+			entityManager.remove(publisher);
+			return publisher.getId();
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			return -1;
+		}
 	}
 
 
