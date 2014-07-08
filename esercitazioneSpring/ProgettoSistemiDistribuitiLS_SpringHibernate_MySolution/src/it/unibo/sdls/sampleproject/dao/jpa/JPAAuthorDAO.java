@@ -39,7 +39,7 @@ public class JPAAuthorDAO implements AuthorDAO {
 	public int removeAuthorByName(String name) {
 		try
 		{
-			Author author = (Author) entityManager.createQuery("SELECT Author a FROM Author WHERE a.name= :name").setParameter("name", name).getSingleResult();
+			Author author = (Author) entityManager.createQuery("SELECT a FROM Author a WHERE a.name= :name").setParameter("name", name).getSingleResult();
 			entityManager.remove(author);		
 			return author.getId();
 		}
@@ -68,7 +68,7 @@ public class JPAAuthorDAO implements AuthorDAO {
 	public Author findAuthorByName(String name) {
 		try
 		{
-			Author author = (Author) entityManager.createQuery("SELECT Author a FROM Author WHERE a.name= :name").setParameter("name", name).getSingleResult();
+			Author author = (Author) entityManager.createQuery("SELECT a FROM Author a WHERE a.name= :name").setParameter("name", name).getSingleResult();
 			return author;
 		}
 		catch(Exception e)
