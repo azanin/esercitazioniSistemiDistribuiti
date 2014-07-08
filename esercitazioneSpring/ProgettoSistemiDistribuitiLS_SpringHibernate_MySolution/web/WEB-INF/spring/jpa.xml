@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+		
+		<!-- FactoryBean that creates a JPA EntityManagerFactory according to JPA's standard container bootstrap contract. This is the most powerful way to set up a shared JPA EntityManagerFactory in a Spring application context;
+		 the EntityManagerFactory can then be passed to JPA-based DAOs via dependency injection. 
+		 Note that switching to a JNDI lookup or to a LocalEntityManagerFactoryBean definition is just a matter of configuration!
+		 As with LocalEntityManagerFactoryBean, configuration settings are usually read in from a META-INF/persistence.xml config file, residing in the class path, according to the general JPA configuration contract.
+		 However, this FactoryBean is more flexible in that you can override the location of the persistence.xml file, specify the JDBC DataSources to link to, etc. 
+		 Furthermore, it allows for pluggable class instrumentation through Spring's LoadTimeWeaver abstraction, instead of being tied to a special VM agent specified on JVM startup.
+		 Internally, this FactoryBean parses the persistence.xml file itself and creates a corresponding PersistenceUnitInfo object (with further configuration merged in, such as JDBC DataSources and the Spring LoadTimeWeaver), to be passed to the chosen JPA PersistenceProvider.
+		 This corresponds to a local JPA container with full support for the standard JPA container contract.
+		 The exposed EntityManagerFactory object will implement all the interfaces of the underlying native EntityManagerFactory returned by the PersistenceProvider, plus the EntityManagerFactoryInfo interface which exposes additional metadata as assembled by this FactoryBean. -->
+		
+		<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="mysqlDataSource" />
+<!--		<property name="dataSource" ref="hsqldbDataSource" />-->
+		<property name="persistenceXmlLocation" value="web/META-INF/persistence.xml" />
+<!--		<property name="persistenceXmlLocation" value="${jpa.persistenceDescriptorLocation.production}" />-->
+		<property name="persistenceUnitName" value="booksManagerPU" />
+		<!-- <property name="jpaDialect" ref="jpaDialect" /> -->
+		<property name="jpaVendorAdapter" ref="hibernateJpaVendorAdapter" />
+		<property name="jpaProperties">
+			<props>
+<!--				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>-->
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+	</bean>
+		
+		
+		<bean id="hibernateJpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+			<property name="database" value="MYSQL"></property>
+		</bean>
+		
+		<bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+			<property name="entityManagerFactory" ref="entityManagerFactory"/>
+		</bean>	
+		
+		<tx:annotation-driven transaction-manager="jpaTransactionManager"/>	
+		
+		<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />	
+		<!-- 
+		BeanPostProcessor that processes PersistenceUnit and PersistenceContext annotations, 
+		for injection of the corresponding JPA resources EntityManagerFactory  and EntityManager. 
+		Any such annotated fields or methods in any Spring-managed object will automatically be 
+		injected. 
+	 -->
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+		
+		
+</beans>

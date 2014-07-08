@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- definition of beans for business logic -->
+	
+	<!-- 
+		DAO: JPA Entity Managers are automatically injected by the Spring container thanks
+		to @PersistenceContext annotations
+	 -->
+	 
+	 <bean id="AuthorDAO" class="it.unibo.sdls.sampleproject.dao.jpa.JPAAuthorDAO">
+	 <property name="logger">
+	 	<bean class="org.apache.log4j.Logger"
+	 		factory-method="getRootLogger"
+	 		scope="singleton" >
+	 	</bean>	 
+	 </property>	 
+	 </bean>
+	 
+	  <bean id="PublisherDAO" class="it.unibo.sdls.sampleproject.dao.jpa.PublisherDAO">
+	 <property name="logger">
+	 	<bean class="org.apache.log4j.Logger"
+	 		factory-method="getRootLogger"
+	 		scope="singleton" >
+	 	</bean>	 
+	 </property>	 
+	 </bean>
+	 
+	  <bean id="BookDAO" class="it.unibo.sdls.sampleproject.dao.jpa.JPABookDAO">
+	 <property name="logger">
+	 	<bean class="org.apache.log4j.Logger"
+	 		factory-method="getRootLogger"
+	 		scope="singleton" >
+	 	</bean>	 
+	 </property>	 
+	 </bean>
+	
+	
+</beans>
