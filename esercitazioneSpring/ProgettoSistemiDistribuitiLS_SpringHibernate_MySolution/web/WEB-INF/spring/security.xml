@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+        
+        
+        
+        <!-- we need to define the security bean -->
+        <bean id="securityBean" class="it.unibo.sdls.sampleproject.security.SecurityPolicy"></bean>
+        
+        <!-- we need to define proxies for the beans -->
+        
+        <bean id="jpaAuthorDAOProxy" class=""org.springframework.aop.framework.ProxyFactoryBean">
+        	<property name="target" ref="AuthorDAO"></property>
+        	<property name="interceptorNames">
+        		<list>
+        			<value>securityBean</value>
+        		</list>
+        	</property>        
+        </bean>
+        
+        <bean id="jpaBookDAOProxy" class=""org.springframework.aop.framework.ProxyFactoryBean">
+        	<property name="target" ref="BookDAO"></property>
+        	<property name="interceptorNames">
+        		<list>
+        			<value>securityBean</value>
+        		</list>
+        	</property>        
+        </bean>
+        
+        <bean id="jpaPublisherDAOProxy" class=""org.springframework.aop.framework.ProxyFactoryBean">
+        	<property name="target" ref="PublisherDAO"></property>
+        	<property name="interceptorNames">
+        		<list>
+        			<value>securityBean</value>
+        		</list>
+        	</property>        
+        </bean>
+        
+        
+        <!-- <aop:config>
+		
+		
+			Advising JPA DAO classes:
+			All public methods in the it.unibo.sdls.sampleproject.dao.jpa package taking any number
+			and type of arguments 
+		
+		<aop:pointcut expression="execution(public * it.unibo.sdls.sampleproject.dao.jpa.*.*(..))" id="daoSecurityPointcut"/>
+		
+		<aop:aspect ref="securityManager" >
+			<aop:around method="checkSecurity" pointcut-ref="daoSecurityPointcut"/>
+		</aop:aspect>
+		
+	</aop:config> 
+	
+	-->
+        
+        
+        
+ </beans>
