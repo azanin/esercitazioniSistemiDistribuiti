@@ -19,6 +19,16 @@
 		<param-value>it.unibo.sdls.sampleproject.dao.jdbc.pooled.mysql.PooledMySqlJDBCDAOFactory</param-value>
 		 -->
 	</context-param>
+	
+	<context-param>
+		<param-name>tomcat</param-name>
+		<value>true</value>	
+	</context-param>
+	
+	<!-- register listener -->
+	<listener>
+		<listener-class>it.unibo.sdls.sampleproject.web.MBeanLoader</listener-class>
+	</listener>
 
 	<!-- Handle exceptions and errors -->
 	
