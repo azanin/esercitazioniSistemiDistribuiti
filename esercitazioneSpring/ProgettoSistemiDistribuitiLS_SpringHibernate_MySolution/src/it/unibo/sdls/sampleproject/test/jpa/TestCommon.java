@@ -47,11 +47,11 @@ public class TestCommon extends AbstractTransactionalJUnit4SpringContextTests
 	protected static final String isbn13 = "987654321";
 	
 	@Autowired
-	private AuthorDAO authorDAO;
+	protected AuthorDAO authorDAO;
 	@Autowired
-	private PublisherDAO publisherDAO;
+	protected PublisherDAO publisherDAO;
 	@Autowired
-	private BookDAO bookDAO;
+	protected BookDAO bookDAO;
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests#setDataSource(javax.sql.DataSource)
